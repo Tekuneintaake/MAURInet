@@ -1,52 +1,57 @@
-export async function onRequest(context) {
-  const { request } = context;
+export async function onRequest({ request, env }) {
   const { method } = request;
-
-  // Mock database (resets on redeploy)
-  let mockPosts = [
-    { id: 1, user: "Anonymous", text: "Welcome to MAURInet! 🌴", likes: 0 }
-  ];
-
-  // Set CORS headers
   const headers = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type'
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
   };
 
-  // Handle OPTIONS for CORS preflight
+  // CORS Preflight
   if (method === 'OPTIONS') {
     return new Response(null, { headers });
   }
 
   try {
-    // Handle POST (add new post)
-    if (method === "POST") {
-      const { text, user = "Anonymous" } = await request.json();
-      const newPost = { 
-        id: mockPosts.length + 1, 
-        user,
-        text, 
-        likes: 0,
-        timestamp: new Date().toISOString()
-      };
-      mockPosts.push(newPost);
+    // Create Post
+    if (method === 'POST') {
+      const { text, username = "Anonymous" } = await request.json();
+      
+      const { success, meta } = await env.DB.prepare(
+        `INSERT INTO posts (username, content) 
+         VALUES (?, ?)`
+      ).bind(username, text).run();
+
+      if (!success) throw new Error('Database insert failed');
+
+      const newPost = await env.DB.prepare(
+        `SELECT * FROM posts WHERE id = ?`
+      ).bind(meta.last_row_id).first();
+
       return Response.json(newPost, { status: 201, headers });
     }
 
-    // Handle GET (fetch posts)
-    if (method === "GET") {
-      return Response.json(mockPosts, { headers });
+    // Get Posts
+    if (method === 'GET') {
+      const { results } = await env.DB.prepare(
+        `SELECT p.*, 
+                COALESCE(pr.avatar, 'https://i.imgur.com/placeholder.jpg') as avatar
+         FROM posts p
+         LEFT JOIN profiles pr ON p.username = pr.username
+         ORDER BY p.created_at DESC
+         LIMIT 50`
+      ).all();
+
+      return Response.json(results, { headers });
     }
 
     return Response.json(
-      { error: "Method not allowed" }, 
+      { error: 'Method not allowed' },
       { status: 405, headers }
     );
 
   } catch (error) {
     return Response.json(
-      { error: "Internal server error" },
+      { error: error.message },
       { status: 500, headers }
     );
   }
