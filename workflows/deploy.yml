@@ -1,0 +1,12 @@
+name: Deploy MAURInet
+on: push
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - run: wrangler d1 execute maurinet-db --file=./schema.sql
+      - run: wrangler pages publish . --project-name=maurinet
