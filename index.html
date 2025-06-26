@@ -4,52 +4,6 @@
   <title>MauriNet - Kiribati's Social Hub</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    /* MOBILE-FRIENDLY STYLES */
-    body {
-      font-family: Arial;
-      margin: 0;
-      padding: 10px;
-      background: #f0f8ff; /* Light blue background */
-    }
-    
-    /* Header */
-    .header {
-      background: #2C3E50; /* Dark blue */
-      color: white;
-      padding: 15px;
-      text-align: center;
-      font-size: 1.2rem;
-    }
-    
-    /* Post Box */
-    .post-box {
-      background: white;
-      padding: 15px;
-      margin: 15px 0;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    
-    textarea {
-      width: 100%;
-      height: 80px;
-      border: 1px solid #ddd;
-      padding: 10px;
-      margin-bottom: 10px;
-    }
-    
-    button {
-      background: #e67e22; /* Sunset orange */
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      font-size: 1rem;
-    }
-  </style>
-</head>
-  <title>MauriNet - Kiribati's Social Hub</title>
-  <style>
     :root {
       --blue: #2C3E50;    /* Dark blue (Kiribati ocean) */
       --orange: #e67e22;  /* Sunset orange */
@@ -58,9 +12,9 @@
     body {
       font-family: Arial;
       margin: 0;
+      padding: 10px;
       background: var(--light);
     }
-    /* Header like Facebook */
     .header {
       background: var(--blue);
       color: white;
@@ -72,7 +26,6 @@
       margin: 0;
       font-size: 24px;
     }
-    /* Main feed layout */
     .post-box, .post {
       background: white;
       border-radius: 8px;
@@ -86,13 +39,30 @@
       height: 80px;
       margin-bottom: 10px;
     }
-    .post-button {
+    button {
       background: var(--orange);
       color: white;
       border: none;
       padding: 8px 15px;
       border-radius: 5px;
       cursor: pointer;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    #profile-form {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px auto;
+      max-width: 500px;
+    }
+    #profile-form input,
+    #profile-form textarea {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
     }
   </style>
 </head>
@@ -104,8 +74,8 @@
 
   <!-- Post Box -->
   <div class="post-box">
-    <textarea placeholder="What's on your mind?"></textarea>
-    <button class="post-button">Post</button>
+    <textarea id="post-content" placeholder="What's on your mind?"></textarea>
+    <button id="post-button">Post</button>
   </div>
 
   <!-- Sample Post -->
@@ -114,39 +84,76 @@
     <p>Just caught 50kg of tuna today! Message me to buy. 🐟</p>
     <small>Posted 2 hours ago</small>
   </div>
-  <script>
-  document.querySelector('button').addEventListener('click', async () => {
-    const postText = document.querySelector('textarea').value.trim();
-    if (!postText) return;
 
-    // Save to Cloudflare D1
-    const response = await fetch('https://your-worker.workers.dev/posts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content: postText })
-    });
-    
-    if (response.ok) {
-      location.reload(); // Refresh to show new post
-    }
-  });
-</script>
   <!-- Profile Form -->
-<form id="profile-form">
-  <input type="text" id="username" placeholder="Username" required>
-  <textarea id="bio" placeholder="Bio"></textarea>
-  <button type="submit">Save Profile</button>
-</form>
+  <form id="profile-form">
+    <input type="text" id="username" placeholder="Username" required>
+    <textarea id="bio" placeholder="Bio"></textarea>
+    <button type="submit" id="save-profile">Save Profile</button>
+  </form>
 
-<script>
-  // Save profile
-  document.getElementById("profile-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    await fetch("/profile/" + username.value, {
-      method: "POST",
-      body: JSON.stringify({ bio: bio.value })
+  <script>
+    // Post functionality
+    document.getElementById('post-button').addEventListener('click', async () => {
+      const postText = document.getElementById('post-content').value.trim();
+      const button = document.getElementById('post-button');
+      
+      if (!postText) return;
+      
+      button.disabled = true;
+      button.textContent = 'Posting...';
+      
+      try {
+        const response = await fetch('/post', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: postText })
+        });
+        
+        if (response.ok) {
+          location.reload();
+        } else {
+          alert('Failed to post. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Network error');
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Post';
+      }
     });
-  });
-</script>
+
+    // Profile functionality
+    document.getElementById('profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const button = document.getElementById('save-profile');
+      const username = document.getElementById('username').value;
+      const bio = document.getElementById('bio').value;
+      
+      button.disabled = true;
+      button.textContent = 'Saving...';
+      
+      try {
+        const response = await fetch(`/profile/${username}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ bio })
+        });
+        
+        if (response.ok) {
+          alert('Profile saved!');
+        } else {
+          alert('Failed to save profile');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Network error');
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Save Profile';
+      }
+    });
+  </script>
 </body>
 </html>
