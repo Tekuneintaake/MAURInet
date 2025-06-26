@@ -114,5 +114,24 @@
     <p>Just caught 50kg of tuna today! Message me to buy. 🐟</p>
     <small>Posted 2 hours ago</small>
   </div>
+  <script>
+  document.querySelector('button').addEventListener('click', () => {
+    const postText = document.querySelector('textarea').value;
+    if (postText.trim() === '') return;
+    
+    // Create new post
+    const postHTML = `
+      <div class="post-box">
+        <strong>You</strong>
+        <p>${postText}</p>
+        <small>Posted just now</small>
+      </div>
+    `;
+    
+    // Add post to the page
+    document.body.insertAdjacentHTML('beforeend', postHTML);
+    document.querySelector('textarea').value = ''; // Clear input
+  });
+</script>
 </body>
 </html>
