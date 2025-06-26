@@ -1,17 +1,8 @@
+name = "maurinet"
+compatibility_date = "2024-06-01"
+main = "functions/_middleware.js"
+
 [[d1_databases]]
-binding = "DB"  # Name to use in your Worker code
+binding = "DB"
 database_name = "maurinet-db"
 database_id = "1ca52186-e8c5-4636-b21d-1a131a0fa7ea"
-CREATE TABLE profiles (
-  username TEXT PRIMARY KEY,
-  bio TEXT,
-  avatar TEXT,
-  joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE posts (
-  id INTEGER PRIMARY KEY,
-  username TEXT,
-  content TEXT,
-  FOREIGN KEY (username) REFERENCES profiles(username)
-);
