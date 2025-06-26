@@ -1,0 +1,4 @@
+[[d1_databases]]
+binding = "DB"  # Name to use in your Worker code
+database_name = "maurinet-db"
+database_id = "1ca52186-e8c5-4636-b21d-1a131a0fa7ea"
