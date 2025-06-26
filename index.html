@@ -131,5 +131,22 @@
     }
   });
 </script>
+  <!-- Profile Form -->
+<form id="profile-form">
+  <input type="text" id="username" placeholder="Username" required>
+  <textarea id="bio" placeholder="Bio"></textarea>
+  <button type="submit">Save Profile</button>
+</form>
+
+<script>
+  // Save profile
+  document.getElementById("profile-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    await fetch("/profile/" + username.value, {
+      method: "POST",
+      body: JSON.stringify({ bio: bio.value })
+    });
+  });
+</script>
 </body>
 </html>
