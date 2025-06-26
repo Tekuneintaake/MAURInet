@@ -1,5 +1,3 @@
-# MAURInet
-Kiribati Social Media And Shopping Mall
 # MauriNet 🌴
 
 Kiribati's first social and marketplace platform.
