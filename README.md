@@ -1,13 +1,23 @@
-# MauriNet 🌴
+# 🌴 MAURInet
 
-Kiribati's first social and marketplace platform.
+**Kiribati's first social and marketplace platform**  
+Social + shopping for the islands — local users, vendors, and communities.
 
-## Features
-- Local vendor sign-up (Vodafone OTP)
-- Product listings with cash-on-delivery
-- Climate alerts for fishing/agriculture
+---
 
-## Setup
-1. Clone this repo:
-   ```bash
-   git clone https://github.com/YOUR-USERNAME/maurinet.git
+## 🌟 Features
+
+- 👥 User profiles and Facebook-like posts
+- 🛍️ Local vendor sign-up (Vodafone OTP planned)
+- 📦 Product listings with cash-on-delivery support
+- 💬 Messaging, comments, and notifications
+- 🌊 Climate alerts for fishing and agriculture
+
+---
+
+## 🚀 Setup
+
+### 1. Clone this repo
+```bash
+git clone https://github.com/Tekuneintaake/MAURInet.git
+cd MAURInet
