@@ -13,3 +13,9 @@ function postMessage() {
   feed.prepend(newPost);
   textarea.value = "";
 }
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
