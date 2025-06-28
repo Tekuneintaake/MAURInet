@@ -1,30 +1,24 @@
-function postMessage() {
-  const textarea = document.querySelector("textarea");
-  const feed = document.getElementById("feed");
-  const content = textarea.value.trim();
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
 
-  if (content === "") return;
+    // GET all users
+    if (url.pathname === '/api/users' && request.method === 'GET') {
+      try {
+        const { results } = await env.DB.prepare('SELECT * FROM users').all();
+        return new Response(JSON.stringify(results), {
+          headers: { 'Content-Type': 'application/json' },
+          status: 200,
+        });
+      } catch (error) {
+        return new Response(JSON.stringify({ error: error.message }), {
+          headers: { 'Content-Type': 'application/json' },
+          status: 500,
+        });
+      }
+    }
 
-  fetch("https://your-cloudflare-backend-url/posts", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      username: "you", // Replace with actual logged-in user later
-      content: content
-    })
-  })
-    .then(res => res.json())
-    .then(data => {
-      const newPost = document.createElement("div");
-      newPost.className = "post";
-      newPost.innerHTML = `
-        <p><strong>@${data.username}</strong>: ${data.content}</p>
-        <span class="time">Just now</span>
-      `;
-      feed.prepend(newPost);
-      textarea.value = "";
-    })
-    .catch(err => console.error("Error posting:", err));
-}
+    // 404 fallback
+    return new Response('Not Found', { status: 404 });
+  }
+};
