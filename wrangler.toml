@@ -1,12 +1,8 @@
-name = "maurinet"
+name = "kiribati-connect"
 compatibility_date = "2024-06-01"
 main = "functions/_middleware.js"
 
 [[d1_databases]]
-binding = "DB"
-database_name = "maurinet-db"
+binding = "DB" # Must match env.DB in your code
+database_name = "maurinet-db" # Keep as-is unless you rename it in Cloudflare
 database_id = "1ca52186-e8c5-4636-b21d-1a131a0fa7ea"
-[[d1_databases]]
-binding = "DB" # 👈 this name must match `env.DB` in script.js
-database_name = "maurinet"
-database_id = "<your-d1-database-id>"
