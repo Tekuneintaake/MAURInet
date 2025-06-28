@@ -1,3 +1,4 @@
+!-- Trigger redeploy -->
 Kiribati Connect - Social Media Platform
 Overview
 Kiribati Connect is a full-stack social media platform designed for the Kiribati community. It features a modern React frontend with a Node.js/Express backend, using PostgreSQL for data persistence through Drizzle ORM. The application enables users to create posts, interact with content, and connect with friends in a culturally-themed interface inspired by Kiribati's ocean and coral aesthetics.
